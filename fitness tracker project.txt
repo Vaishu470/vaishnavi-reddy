@@ -1,0 +1,80 @@
+import tkinter as tk
+from tkinter import messagebox
+
+def calculate_bmi(height, weight):
+    return weight / (height ** 2)
+
+def classify_bmi(bmi):
+    if bmi < 18.5:
+        return "Underweight"
+    elif 18.5 <= bmi < 25.0:
+        return "Normal weight"
+    elif 25.0 <= bmi < 30.0:
+        return "Overweight"
+    else:
+        return "Obesity"
+
+def calculate_bmr(gender, age, weight, height):
+    if gender.lower() == 'male':
+        bmr = 88.362 + (13.397 * weight) + (4.799 * height * 100) - (5.677 * age)
+    elif gender.lower() == 'female':
+        bmr = 447.593 + (9.247 * weight) + (3.098 * height * 100) - (4.330 * age)
+    return bmr
+
+def calculate_metrics():
+    gender = gender_var.get()
+    age = age_var.get()
+    weight = float(weight_entry.get())
+    height = float(height_entry.get())
+
+    if not (16 <= age <= 25):
+        messagebox.showerror("Error", "Age must be between 16 and 25.")
+        return
+
+    bmi = calculate_bmi(height, weight)
+    bmi_classification = classify_bmi(bmi)
+    bmr = calculate_bmr(gender, age, weight, height)
+
+    result_label.config(text=f"BMI: {round(bmi, 2)} ({bmi_classification})\nBMR: {round(bmr, 2)}")
+
+# Create GUI window
+root = tk.Tk()
+root.title("Fitness Tracker")
+root.geometry("400x300")  # Increased size of the window
+
+# Increase font size for labels and entry widgets
+font = ("Arial", 12)
+
+# Create labels and entry widgets
+gender_label = tk.Label(root, text="Gender (Male/Female):", font=font)
+gender_label.grid(row=0, column=0)
+gender_var = tk.StringVar()
+gender_entry = tk.Entry(root, textvariable=gender_var, font=font)
+gender_entry.grid(row=0, column=1)
+
+age_label = tk.Label(root, text="Age (16-25):", font=font)
+age_label.grid(row=1, column=0)
+age_var = tk.IntVar()
+age_entry = tk.Entry(root, textvariable=age_var, font=font)
+age_entry.grid(row=1, column=1)
+
+weight_label = tk.Label(root, text="Weight (kg):", font=font)
+weight_label.grid(row=2, column=0)
+weight_entry = tk.Entry(root, font=font)
+weight_entry.grid(row=2, column=1)
+
+height_label = tk.Label(root, text="Height (m):", font=font)
+height_label.grid(row=3, column=0)
+height_entry = tk.Entry(root, font=font)
+height_entry.grid(row=3, column=1)
+
+# Create calculate button
+calculate_button = tk.Button(root, text="Calculate", command=calculate_metrics, font=font)
+calculate_button.grid(row=4, columnspan=2)
+
+# Create result label
+result_label = tk.Label(root, text="", justify="left", font=font)
+result_label.grid(row=5, columnspan=2)
+
+# Start GUI event loop
+root.mainloop()
